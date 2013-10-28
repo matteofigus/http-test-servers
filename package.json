@@ -1,0 +1,30 @@
+{
+  "name": "http-test-servers",
+  "version": "0.0.1",
+  "description": "Speeds up some http servers on localhost to facilitate acceptance tests of applications that require api interactions",
+  "author": "Matteo Figus <matteofigus@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/matteofigus/http-test-servers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/matteofigus/http-test-servers/issues"
+  },
+  "keywords": ["test", "http", "http server", "mock"],
+  "main":"index",
+  "engines": {
+    "node": ">=0.6.x",
+    "npm": ">=1.1.x"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "should": "",
+    "mocha": "",
+    "express": ""
+  },
+  "scripts": {
+    "test": "mocha"
+  }
+}
