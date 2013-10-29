@@ -2,6 +2,7 @@ var giveMe = require('give-me');
 var should = require('should');
 var superagent = require('superagent');
 var TestServers = require('./../lib/http-test-servers');
+var _ = require('underscore');
 
 describe('when starting http servers', function(){
 
@@ -207,5 +208,32 @@ describe('when starting http servers', function(){
     });
   });
 
+  it('should they properly setup routes with querystrings', function(done){
+
+    var endpoints = {
+      route1: {
+        route: '/getData?mydata=something'
+      }
+    };
+
+    var servers = {
+      server1: {
+        port: 3006
+      }
+    };
+
+    var testServers = new TestServers(endpoints, servers);
+
+    testServers.start(function(testServers){
+
+      var route = _.filter(testServers.servers.server1.app.routes.get, function(route){
+        return route.path == '/getData'
+      });
+
+      route.length.should.be.eql(1);
+
+      testServers.kill(done);
+    });
+  });
 
 });
