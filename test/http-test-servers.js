@@ -184,7 +184,7 @@ describe('when starting http servers', function(){
     testServers.start(function(testServers){
 
       var callbacks = 2,
-          time = process.hrtime();
+          time = new Date();
 
       var next = function(){
         callbacks--;
@@ -193,14 +193,14 @@ describe('when starting http servers', function(){
       }
 
       superagent.get("http://localhost:3006/getData", function(response){
-        var newTime = process.hrtime(time);
-        newTime[0].should.be.within(0, 2);
+        var newTime = new Date() - time;
+        newTime.should.be.within(0, 2000);
         next();
       });
 
       superagent.get("http://localhost:3007/getData", function(response){
-        var newTime = process.hrtime(time);
-        newTime[0].should.be.within(2, 4);
+        var newTime = new Date() - time;
+        newTime.should.be.within(2000, 4000);
         next();
       });
 
