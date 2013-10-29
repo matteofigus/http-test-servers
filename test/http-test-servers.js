@@ -160,4 +160,52 @@ describe('when starting http servers', function(){
       });
     });
   });
+
+  it('should they properly respond with a specific delay if needed', function(done){
+
+    var endpoints = {
+      route1: {
+        route: '/getData'
+      }
+    };
+
+    var servers = {
+      server1: {
+        port: 3006
+      },
+      server2: {
+        port: 3007,
+        delay: 2000
+      }
+    };
+
+    var testServers = new TestServers(endpoints, servers);
+
+    testServers.start(function(testServers){
+
+      var callbacks = 2,
+          time = process.hrtime();
+
+      var next = function(){
+        callbacks--;
+        if(callbacks == 0)
+          testServers.kill(done);
+      }
+
+      superagent.get("http://localhost:3006/getData", function(response){
+        var newTime = process.hrtime(time);
+        newTime[0].should.be.within(0, 2);
+        next();
+      });
+
+      superagent.get("http://localhost:3007/getData", function(response){
+        var newTime = process.hrtime(time);
+        newTime[0].should.be.within(2, 4);
+        next();
+      });
+
+    });
+  });
+
+
 });
