@@ -101,6 +101,35 @@ describe('when starting http servers', function(){
     });
   });
 
+  it('should they properly respond in case of post routes', function(done){
+
+    var endpoints = {
+      route1: {
+        route: '/deleteData',
+        method: 'delete'
+      }
+    };
+
+    var servers = {
+      server1: {
+        port: 3006
+      }
+    };
+
+    var testServers = new TestServers(endpoints, servers);
+
+    testServers.start(function(testServers){
+
+      superagent.del("http://localhost:3006/deleteData", function(response){
+
+        response.statusCode.should.be.eql(200);
+        response.body.should.be.eql({ message: '/deleteData'});  
+
+        testServers.kill(done);
+      });
+    });
+  });
+
   it('should they properly respond with a specific response and status code if it is specified', function(done){
 
     var endpoints = {
