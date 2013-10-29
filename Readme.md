@@ -6,10 +6,13 @@ Speeds up some http servers for testing pourposes.
 
 ## Installation
 
+```shell
   npm http-test-servers
+```
 
 ### Sample usage (init, start, kill)
 
+```js
   // Routes first. They can be a simple string (will be a get route), or objects as follows
 
   var routes = {
@@ -49,11 +52,13 @@ Speeds up some http servers for testing pourposes.
       console.log('killed everything');
     });
   });
-
+```
 
 # Tests
 
+```shell
   npm test
+```
 
 # License
 
