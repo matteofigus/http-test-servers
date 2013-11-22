@@ -1,6 +1,7 @@
-http-test-servers
+http-test-servers [![Build Status](https://secure.travis-ci.org/matteofigus/http-test-servers.png?branch=master)](http://travis-ci.org/matteofigus/http-test-servers)
 =============
-[![Build Status](https://secure.travis-ci.org/matteofigus/http-test-servers.png?branch=master)](http://travis-ci.org/matteofigus/http-test-servers)
+
+[![NPM](https://nodei.co/npm/http-test-servers.png?downloads=true)](https://npmjs.org/package/http-test-servers)
 
 Speeds up some http servers for testing pourposes.
 

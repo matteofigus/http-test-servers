@@ -102,7 +102,7 @@ describe('when starting http servers', function(){
     });
   });
 
-  it('should they properly respond in case of post routes', function(done){
+  it('should they properly respond in case of delete routes', function(done){
 
     var endpoints = {
       route1: {
