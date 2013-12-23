@@ -38,8 +38,12 @@ Speeds up some http servers for testing pourposes.
     }
   };
 
+  // Optional: the options. 
+
+  var options = { logger: true };
+
   // init
-  var testServers = new TestServers(routes, servers);
+  var testServers = new TestServers(routes, servers, options);
 
   // start them
   testServers.start(function(testServers){
@@ -54,6 +58,11 @@ Speeds up some http servers for testing pourposes.
     });
   });
 ```
+
+### Options
+
+#### logger
+  (Boolean): Displays some info on the console every time a request is made
 
 # Tests
 
