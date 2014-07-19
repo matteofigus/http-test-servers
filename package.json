@@ -1,6 +1,6 @@
 {
   "name": "http-test-servers",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Speeds up some http servers on localhost to facilitate acceptance tests of applications that require api interactions",
   "author": "Matteo Figus <matteofigus@gmail.com>",
   "license": "MIT",
