@@ -162,6 +162,37 @@ describe('when starting http servers', function(){
     });
   });
 
+  it('should they properly respond with a non-json response and status code if it is specified', function(done){
+
+    var endpoints = {
+      route1: {
+        route: '/getData',
+        method: 'get',
+        response: "<html>Hello!</html>",
+        statusCode: 200
+      }
+    };
+
+    var servers = {
+      server1: {
+        port: 3006
+      }
+    };
+
+    var testServers = new TestServers(endpoints, servers);
+
+    testServers.start(function(testServers){
+
+      superagent.get("http://localhost:3006/getData", function(response){
+
+        response.statusCode.should.be.eql(200);
+        response.text.should.be.eql("<html>Hello!</html>");  
+
+        testServers.kill(done);
+      });
+    });
+  });
+
   it('should they properly respond with a specific delay if needed', function(done){
 
     var endpoints = {
