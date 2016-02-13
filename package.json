@@ -33,6 +33,6 @@
     "superagent": "0.18.2"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "node ./node_modules/.bin/mocha test --timeout 400 --reporter spec"
   }
 }
