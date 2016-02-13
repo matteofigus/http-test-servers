@@ -5,29 +5,20 @@ var _ = require('underscore');
 
 describe('http-test-servers', function(){
 
-  var testServers;
-  var TestServers = require('./../lib/http-test-servers');
+  var testServers,
+      TestServers = require('./../lib/http-test-servers');
 
   var initialise = function(endpoints, servers, done){
     testServers = new TestServers(endpoints, servers);
-    testServers.start(function(){
-      done(testServers);
-    });
+    testServers.start(function(){ done(testServers); });
   };
 
   describe('when starting http servers', function(){
 
     it('should expose servers and kill handler', function(done){
 
-      var endpoints = {
-        route1: '/getData',
-        route2: '/getData2'
-      };
-
-      var servers = {
-        server1: { port: 3006 },
-        server2: { port: 3007 }
-      };
+      var endpoints = { route1: '/getData', route2: '/getData2' },
+          servers = { server1: { port: 3006 }, server2: { port: 3007 }};
 
       initialise(endpoints, servers, function(testServers){
         testServers.should.not.be.empty;
@@ -41,15 +32,8 @@ describe('http-test-servers', function(){
 
     it('should provide responsive routes', function(done){
 
-      var endpoints = {
-        route1: '/getData',
-        route2: '/getData2'
-      };
-
-      var servers = {
-        server1: { port: 3006 },
-        server2: { port: 3007 }
-      };
+      var endpoints = { route1: '/getData', route2: '/getData2' },
+          servers = { server1: { port: 3006 }, server2: { port: 3007 }};
 
       initialise(endpoints, servers, function(testServers){
         giveMe.all(superagent.get, [["http://localhost:3006/getData"],["http://localhost:3007/getData2"]], function(responses){
@@ -64,17 +48,8 @@ describe('http-test-servers', function(){
 
     it('should provide responsive post routes', function(done){
 
-      var endpoints = {
-        route1: {
-          route: '/postData',
-          method: 'post'
-        }
-      };
-
-      var servers = {
-        server1: { port: 3006 },
-        server2: { port: 3007 }
-      };
+      var endpoints = { route1: { route: '/postData', method: 'post' }},
+          servers = { server1: { port: 3006 }, server2: { port: 3007 }};
 
       initialise(endpoints, servers, function(testServers){
         giveMe.all(superagent.post, [["http://localhost:3006/postData"],["http://localhost:3007/postData"]], function(responses){
@@ -89,23 +64,61 @@ describe('http-test-servers', function(){
 
     it('should provide delete routes', function(done){
 
-      var endpoints = {
-        route1: {
-          route: '/deleteData',
-          method: 'delete'
-        }
-      };
-
-      var servers = {
-        server1: {
-          port: 3006
-        }
-      };
+      var endpoints = { route1: { route: '/deleteData', method: 'delete' }},
+          servers = { server1: { port: 3006 }};
 
       initialise(endpoints, servers, function(testServers){
         superagent.del("http://localhost:3006/deleteData", function(response){
           response.statusCode.should.be.eql(200);
           response.body.should.be.eql({ message: '/deleteData'});
+          testServers.kill(done);
+        });
+      });
+    });
+
+    it('should provide routes that respond with a non-json response and status code', function(done){
+
+      var endpoints = {
+        route1: {
+          route: '/getData',
+          method: 'get',
+          response: "<html>Hello!</html>",
+          statusCode: 200
+        }
+      };
+
+      var servers = { server1: { port: 3006 }};
+
+      initialise(endpoints, servers, function(testServers){
+        superagent.get("http://localhost:3006/getData", function(response){
+          response.statusCode.should.be.eql(200);
+          response.text.should.be.eql("<html>Hello!</html>");  
+          testServers.kill(done);
+        });
+      });
+    });
+
+    it('should provide routes that respond with some headers', function(done){
+
+      var endpoints = {
+        route1: {
+          route: '/getData',
+          method: 'get',
+          response: "<html>Hello!</html>",
+          statusCode: 200,
+          headers: {
+            'some-header': "value"
+          }
+        }
+      };
+
+      var servers = { server1: { port: 3006 }};
+
+      initialise(endpoints, servers, function(testServers){
+        superagent.get("http://localhost:3006/getData", function(response){
+          response.statusCode.should.be.eql(200);
+          response.text.should.be.eql("<html>Hello!</html>");  
+          response.header['some-header'].should.be.eql("value");
           testServers.kill(done);
         });
       });
@@ -122,11 +135,7 @@ describe('http-test-servers', function(){
         }
       };
 
-      var servers = {
-        server1: {
-          port: 3006
-        }
-      };
+      var servers = { server1: { port: 3006 }};
 
       initialise(endpoints, servers, function(testServers){
         superagent.get("http://localhost:3006/getData", function(response){
@@ -139,17 +148,8 @@ describe('http-test-servers', function(){
 
     it('should provide delayed routes', function(done){
 
-      var endpoints = { route1: { route: '/getData' }};
-
-      var servers = {
-        server1: {
-          port: 3006
-        },
-        server2: {
-          port: 3007,
-          delay: 100
-        }
-      };
+      var endpoints = { route1: { route: '/getData' }},
+          servers = { server1: { port: 3006 }, server2: { port: 3007, delay: 100 }};
 
       initialise(endpoints, servers, function(testServers){
 
@@ -178,17 +178,8 @@ describe('http-test-servers', function(){
 
     it('should provide routes that handle querystrings', function(done){
 
-      var endpoints = {
-        route1: {
-          route: '/getData?mydata=something'
-        }
-      };
-
-      var servers = {
-        server1: {
-          port: 3006
-        }
-      };
+      var endpoints = { route1: { route: '/getData?mydata=something' }},
+          servers = { server1: { port: 3006 }};
 
       initialise(endpoints, servers, function(testServers){
 
