@@ -19,18 +19,18 @@
   ],
   "main": "index",
   "engines": {
-    "node": ">=0.6.x",
+    "node": ">=0.8.x",
     "npm": ">=1.1.x"
   },
   "dependencies": {
-    "give-me": "0.0.15",
-    "express": "3.4.7",
+    "express": "^3.21.2",
+    "give-me": "^0.1.0",
     "underscore": "1.6.0"
   },
   "devDependencies": {
-    "should": "4.0.4",
-    "mocha": "1.20.1",
-    "superagent": "0.18.2"
+    "mocha": "^2.4.5",
+    "should": "^8.2.2",
+    "superagent": "^1.7.2"
   },
   "scripts": {
     "test": "node ./node_modules/.bin/mocha test --timeout 400 --reporter spec"

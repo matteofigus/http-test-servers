@@ -37,10 +37,10 @@ describe('http-test-servers', function(){
 
       initialise(endpoints, servers, function(testServers){
         giveMe.all(superagent.get, [["http://localhost:3006/getData"],["http://localhost:3007/getData2"]], function(responses){
-          responses[0][0].statusCode.should.be.eql(200);
-          responses[0][0].body.should.be.eql({ message: '/getData'});  
-          responses[1][0].statusCode.should.be.eql(200);
-          responses[1][0].body.should.be.eql({ message: '/getData2'});
+          responses[0][1].statusCode.should.be.eql(200);
+          responses[0][1].body.should.be.eql({ message: '/getData'});  
+          responses[1][1].statusCode.should.be.eql(200);
+          responses[1][1].body.should.be.eql({ message: '/getData2'});
           testServers.kill(done);
         });
       });
@@ -53,10 +53,10 @@ describe('http-test-servers', function(){
 
       initialise(endpoints, servers, function(testServers){
         giveMe.all(superagent.post, [["http://localhost:3006/postData"],["http://localhost:3007/postData"]], function(responses){
-          responses[0][0].statusCode.should.be.eql(200);
-          responses[0][0].body.should.be.eql({ message: '/postData'});  
-          responses[1][0].statusCode.should.be.eql(200);
-          responses[1][0].body.should.be.eql({ message: '/postData'});
+          responses[0][1].statusCode.should.be.eql(200);
+          responses[0][1].body.should.be.eql({ message: '/postData'});  
+          responses[1][1].statusCode.should.be.eql(200);
+          responses[1][1].body.should.be.eql({ message: '/postData'});
           testServers.kill(done);
         });
       });
@@ -68,7 +68,7 @@ describe('http-test-servers', function(){
           servers = { server1: { port: 3006 }};
 
       initialise(endpoints, servers, function(testServers){
-        superagent.del("http://localhost:3006/deleteData", function(response){
+        superagent.del("http://localhost:3006/deleteData", function(err, response){
           response.statusCode.should.be.eql(200);
           response.body.should.be.eql({ message: '/deleteData'});
           testServers.kill(done);
@@ -90,7 +90,7 @@ describe('http-test-servers', function(){
       var servers = { server1: { port: 3006 }};
 
       initialise(endpoints, servers, function(testServers){
-        superagent.get("http://localhost:3006/getData", function(response){
+        superagent.get("http://localhost:3006/getData", function(err, response){
           response.statusCode.should.be.eql(200);
           response.text.should.be.eql("<html>Hello!</html>");  
           testServers.kill(done);
@@ -115,7 +115,7 @@ describe('http-test-servers', function(){
       var servers = { server1: { port: 3006 }};
 
       initialise(endpoints, servers, function(testServers){
-        superagent.get("http://localhost:3006/getData", function(response){
+        superagent.get("http://localhost:3006/getData", function(err, response){
           response.statusCode.should.be.eql(200);
           response.text.should.be.eql("<html>Hello!</html>");  
           response.header['some-header'].should.be.eql("value");
@@ -138,7 +138,7 @@ describe('http-test-servers', function(){
       var servers = { server1: { port: 3006 }};
 
       initialise(endpoints, servers, function(testServers){
-        superagent.get("http://localhost:3006/getData", function(response){
+        superagent.get("http://localhost:3006/getData", function(err, response){
           response.statusCode.should.be.eql(317);
           response.body.should.be.eql({ isThisATest: true });
           testServers.kill(done);
@@ -162,13 +162,13 @@ describe('http-test-servers', function(){
             testServers.kill(done);
         }
 
-        superagent.get("http://localhost:3006/getData", function(response){
+        superagent.get("http://localhost:3006/getData", function(err, response){
           var newTime = new Date() - time;
           newTime.should.be.within(0, 100);
           next();
         });
 
-        superagent.get("http://localhost:3007/getData", function(response){
+        superagent.get("http://localhost:3007/getData", function(err, response){
           var newTime = new Date() - time;
           newTime.should.be.within(100, 200);
           next();
@@ -189,6 +189,22 @@ describe('http-test-servers', function(){
 
         route.length.should.be.eql(1);
         testServers.kill(done);
+      });
+    });
+
+    it('should allow post routes to respond with request body', function(done){
+
+      var endpoints = { route1: { route: '/postData', method: 'post', respondWithBody: true }},
+          servers = { server1: { port: 3006 }};
+
+      initialise(endpoints, servers, function(testServers){
+        superagent.post('http://localhost:3006/postData')
+                  .send({ hi: 'postData'})
+                  .set('content-type', 'application/json')
+                  .end(function(err, res){
+          res.body.should.be.eql({ hi: 'postData'});
+          testServers.kill(done);
+        });
       });
     });
   });
