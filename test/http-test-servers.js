@@ -183,7 +183,7 @@ describe('http-test-servers', function(){
 
       initialise(endpoints, servers, function(testServers){
 
-        var route = _.filter(testServers.servers.server1.app.routes.get, function(route){
+        var route = _.filter(['post', 'get', 'delete', 'put'].map(rt => [rt, testServers.servers.server1.app._router.stack.map(r => r.route).filter(r => r && r.methods[rt])]).reduce((acc, elem) => {acc[elem[0]] = elem[1]; return acc}, {}).get, function(route){
           return route.path == '/getData'
         });
 
